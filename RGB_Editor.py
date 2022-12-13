@@ -16,6 +16,10 @@ class RGB_Editor:
                 pixel = data[x, y]
                 #edit red value by slider value
                 r = pixel[0] + num
+                if r > 255:
+                    r = 255
+                elif r < 0:
+                    r = 0
                 b = pixel[1]
                 g = pixel[2]
                 data[x,y] = (r, g, b)
@@ -30,9 +34,13 @@ class RGB_Editor:
         for x in range(image.width):
             for y in range(image.height):
                 pixel = data[x, y]
-                #edit red value by slider value
+                #edit blue value by slider value
                 r = pixel[0] 
                 b = pixel[1] + num
+                if b > 255:
+                    b = 255
+                elif b < 0:
+                    b = 0
                 g = pixel[2]
                 data[x,y] = (r, g, b)
 
@@ -46,10 +54,14 @@ class RGB_Editor:
         for x in range(image.width):
             for y in range(image.height):
                 pixel = data[x, y]
-                #edit red value by slider value
+                #edit green value by slider value
                 r = pixel[0] 
                 b = pixel[1]
                 g = pixel[2] + num
+                if g > 255:
+                    g = 255
+                elif g < 0:
+                    g = 0
                 data[x,y] = (r, g, b)
 
         return self.rgb_img
@@ -62,7 +74,8 @@ class RGB_Editor:
         for x in range(image.width):
             for y in range(image.height):
                 pixel = data[x, y]
-                #edit red value by slider value
+                # multiply all rgb values by given value (0-100) by 50
+                # <1 darkens them image, >1 brightens it
                 r = int(pixel[0] * (num/50))
                 b = int(pixel[1] * (num/50))
                 g = int(pixel[2] * (num/50))
