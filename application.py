@@ -15,6 +15,7 @@ from PIL.ImageFilter import (
 class App():
     def __init__(self):
 
+        self.filters = [BLUR, CONTOUR, DETAIL, EDGE_ENHANCE, EDGE_ENHANCE_MORE, FIND_EDGES, SMOOTH, SMOOTH_MORE, SHARPEN]
         # create initial flags and PIL images to avoid garbage collection
         self.opened_flag=0
         self.editor = RGB_Editor()
@@ -46,6 +47,9 @@ class App():
         self.btn_poster = tk.Button(self.button_frame, text="Posterize", command=lambda: self.update_canvas("poster"))
         self.btn_blur = tk.Button(self.button_frame, text="Blur", command=lambda: self.update_canvas("blur"))
         self.btn_sharp = tk.Button(self.button_frame, text="Sharpen", command=lambda: self.update_canvas("sharp"))
+        self.btn_noise = tk.Button(self.button_frame, text="Noise", command=lambda: self.update_canvas("noise"))
+        self.btn_random = tk.Button(self.button_frame, text="Random", command=lambda: self.update_canvas("random"))
+        self.btn_enhance = tk.Button(self.button_frame, text="Equalize", command=lambda: self.update_canvas("enhance"))
         
         #rgb slider buttons
         self.btn_r = tk.Button(self.button_frame, text="Set R Value", command=lambda: self.use_slider("red"))
@@ -57,8 +61,8 @@ class App():
         self.red_slider = Scale(self.button_frame, from_=-128, to=128, orient=HORIZONTAL)
         self.blue_slider = Scale(self.button_frame, from_=-128, to=128, orient=HORIZONTAL)
         self.green_slider = Scale(self.button_frame, from_=-128, to=128, orient=HORIZONTAL)
-        self.bright_slider = Scale(self.button_frame, from_=0, to=100, orient=HORIZONTAL)
-        self.bright_slider.set(50)
+        self.bright_slider = Scale(self.button_frame, from_=-128, to=128, orient=HORIZONTAL)
+        #self.bright_slider.set(50)
         
         #labels
         self.red_l = Label(self.button_frame, text = "Red Value Slider")
@@ -80,6 +84,17 @@ class App():
                 self.img = ImageTk.PhotoImage(self.PIL_img)
             case "sharp":
                 self.PIL_img = self.PIL_img.filter(SHARPEN)
+                self.img = ImageTk.PhotoImage(self.PIL_img)
+            case "random":
+                # choose a random filter from list
+                num = random.randrange(0, len(self.filters))
+                self.PIL_img = self.PIL_img.filter(self.filters[num])
+                self.img = ImageTk.PhotoImage(self.PIL_img)
+            case "noise":
+                self.PIL_img = self.editor.add_noise(self.PIL_img, .3)
+                self.img = ImageTk.PhotoImage(self.PIL_img)
+            case "enhance":
+                self.PIL_img = ImageOps.equalize(self.PIL_img)
                 self.img = ImageTk.PhotoImage(self.PIL_img)
             case "inverse":
                 self.PIL_img = ImageOps.invert(self.PIL_img)
@@ -189,19 +204,22 @@ class App():
         self.btn_flip.grid(row = 3, column = 0, padx=(10,10), pady = (10,10))
         self.btn_sharp.grid(row = 3, column = 1, padx=(10,10), pady = (10,10))
         self.btn_blur.grid(row = 3, column = 2, padx=(10,10), pady = (10,10))
+        self.btn_random.grid(row = 4, column = 2, padx=(10,10), pady = (10,10))
+        self.btn_noise.grid(row = 4, column = 1, padx=(10,10), pady = (10,10))
+        self.btn_enhance.grid(row = 4, column = 0, padx=(10,10), pady = (10,10))
 
-        self.red_slider.grid(row = 4, column = 1)
-        self.blue_slider.grid(row = 6, column = 1)
-        self.green_slider.grid(row = 5, column = 1)
-        self.bright_slider.grid(row = 7, column = 1)
+        self.red_slider.grid(row = 5, column = 1)
+        self.blue_slider.grid(row = 7, column = 1)
+        self.green_slider.grid(row = 6, column = 1)
+        self.bright_slider.grid(row = 8, column = 1)
         
-        self.red_l.grid(row = 4, column = 0, padx=(10,10), pady = (10,10))
-        self.blue_l.grid(row = 6, column = 0, padx=(10,10), pady = (10,10))
-        self.green_l.grid(row = 5, column = 0, padx=(10,10), pady = (10,10))
-        self.bright_l.grid(row = 7, column = 0, padx=(10,10), pady = (10,10))
+        self.red_l.grid(row = 5, column = 0, padx=(10,10), pady = (10,10))
+        self.blue_l.grid(row = 7, column = 0, padx=(10,10), pady = (10,10))
+        self.green_l.grid(row = 6, column = 0, padx=(10,10), pady = (10,10))
+        self.bright_l.grid(row = 8, column = 0, padx=(10,10), pady = (10,10))
 
-        self.btn_r.grid(row = 4, column = 2, padx=(10,10), pady = (10,10))
-        self.btn_g.grid(row = 5, column = 2, padx=(10,10), pady = (10,10))
-        self.btn_b.grid(row = 6, column = 2, padx=(10,10), pady = (10,10))
-        self.btn_bright.grid(row = 7, column = 2, padx=(10,10), pady = (10,10))
+        self.btn_r.grid(row = 5, column = 2, padx=(10,10), pady = (10,10))
+        self.btn_g.grid(row = 6, column = 2, padx=(10,10), pady = (10,10))
+        self.btn_b.grid(row = 7, column = 2, padx=(10,10), pady = (10,10))
+        self.btn_bright.grid(row = 8, column = 2, padx=(10,10), pady = (10,10))
 
